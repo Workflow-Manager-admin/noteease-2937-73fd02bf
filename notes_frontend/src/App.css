@@ -2,6 +2,8 @@
   --primary: #1976d2;
   --accent: #fbc02d;
   --secondary: #424242;
+
+  /* Light Theme Defaults */
   --app-background: #f8f9fa;
   --header-background: #ffffff;
   --notes-background: #fafbfc;
@@ -11,6 +13,56 @@
   --card-border: #e4e7ed;
   --modal-backdrop: rgba(40,44,52,0.4);
   --shadow: 0 2px 8px rgba(24,28,40,0.08);
+}
+
+/* DARK THEME: set .dark-theme on root element */
+.dark-theme {
+  --app-background: #181a20;
+  --header-background: #22242c;
+  --notes-background: #20222a;
+  --text-main: #e9e9eb;
+  --text-subtle: #b3b5be;
+  --card-bg: #22242c;
+  --card-border: #2c3240;
+  --modal-backdrop: rgba(10,13,18,0.7);
+  --shadow: 0 2px 12px rgba(18,30,66,0.37);
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+  margin-left: auto;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: var(--header-background);
+  color: var(--primary);
+  font-size: 1.2rem;
+  border-radius: 50px;
+  padding: 6px 16px 6px 10px;
+  display: flex;
+  align-items: center;
+  transition: background 0.16s, color 0.15s;
+  box-shadow: 0 0.5px 2px rgba(32,24,32,0.09);
+  position: relative;
+  min-width: 63px;
+  gap: 5px;
+}
+.theme-toggle:hover, .theme-toggle:focus {
+  background: #f6f7ff;
+}
+.dark-theme .theme-toggle {
+  background: #282d3b;
+  color: #fbc02d;
+}
+.dark-theme .theme-toggle:hover,
+.dark-theme .theme-toggle:focus {
+  background: #232737;
+}
+
+.theme-toggle .theme-emoji {
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin-right: 2px;
 }
 
 body {

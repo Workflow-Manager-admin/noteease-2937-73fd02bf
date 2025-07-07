@@ -8,15 +8,24 @@ import './App.css';
  *  - Create, view, edit, delete
  *  - Modal dialog for create/edit
  *  - Header, floating action button
- *  - Light theme, custom colors
+ *  - Light & dark theme, custom colors, theme toggle
  */
 
-// Theme color variables
+// Theme color variables (core palette)
 const COLORS = {
   primary: '#1976d2',
   accent: '#fbc02d',
   secondary: '#424242',
 };
+
+// Helpers for theme persistence
+function getSavedTheme() {
+  const val = localStorage.getItem('theme');
+  return (val === 'dark' || val === 'light') ? val : 'light';
+}
+function saveTheme(val) {
+  try { localStorage.setItem('theme', val); } catch { }
+}
 
 function uuid() {
   // Simple unique id generator for demo/local state use
@@ -30,10 +39,23 @@ const themeCSSVars = {
   '--secondary': COLORS.secondary,
 };
 
-function NotesHeader() {
+// NotesHeader with Theme Toggle
+function NotesHeader({ theme, toggleTheme }) {
   return (
-    <header className="notes-header">
-      <h1 className="app-title">Notes</h1>
+    <header className="notes-header" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative'}}>
+      <h1 className="app-title" style={{marginRight: 16}}>Notes</h1>
+      <button
+        className="theme-toggle"
+        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} mode`}
+        onClick={toggleTheme}
+        type="button"
+      >
+        <span className="theme-emoji" role="img" aria-label={theme === 'dark' ? 'moon' : 'sun'}>
+          {theme === 'dark' ? '🌙' : '☀️'}
+        </span>
+        {theme === 'dark' ? 'Dark' : 'Light'}
+      </button>
     </header>
   );
 }
@@ -203,7 +225,10 @@ function usePersistedNotes() {
   return { notes, createNote, updateNote, deleteNote, getNote };
 }
 
-// ---- Main App ----
+/**
+ * PUBLIC_INTERFACE
+ * Main application root for Notes app. Handles theming, note CRUD, and rendering UI.
+ */
 function App() {
   // Note data and CRUD functions
   const {
@@ -216,6 +241,26 @@ function App() {
   // Modal state
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
+
+  // Theme state
+  const [theme, setTheme] = useState(getSavedTheme());
+
+  // Apply/remove .dark-theme class to root node
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark-theme');
+    } else {
+      root.classList.remove('dark-theme');
+    }
+    saveTheme(theme);
+  }, [theme]);
+
+  // Toggle theme
+  // PUBLIC_INTERFACE
+  function toggleTheme() {
+    setTheme(current => (current === 'dark' ? 'light' : 'dark'));
+  }
 
   // Open modal for new note
   function openNewNote() {
@@ -250,7 +295,7 @@ function App() {
 
   return (
     <div className="app-root" style={themeCSSVars}>
-      <NotesHeader />
+      <NotesHeader theme={theme} toggleTheme={toggleTheme} />
       <main className="notes-main">
         <NotesList notes={notes} onEdit={openEditNote} onDelete={handleDelete} />
         <Fab onClick={openNewNote} />
