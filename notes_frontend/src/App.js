@@ -39,24 +39,50 @@ const themeCSSVars = {
   '--secondary': COLORS.secondary,
 };
 
-// NotesHeader with Theme Toggle
-function NotesHeader({ theme, toggleTheme }) {
+/**
+ * NotesHeader - header bar with app title, theme toggle, and optional children (e.g. search bar)
+ */
+function NotesHeader({ theme, toggleTheme, children }) {
   return (
-    <header className="notes-header" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative'}}>
-      <h1 className="app-title" style={{marginRight: 16}}>Notes</h1>
-      <button
-        className="theme-toggle"
-        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} mode`}
-        onClick={toggleTheme}
-        type="button"
-      >
-        <span className="theme-emoji" role="img" aria-label={theme === 'dark' ? 'moon' : 'sun'}>
-          {theme === 'dark' ? '🌙' : '☀️'}
-        </span>
-        {theme === 'dark' ? 'Dark' : 'Light'}
-      </button>
+    <header className="notes-header" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', flexDirection: 'column', gap: 12}}>
+      <div style={{display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center', position: 'relative'}}>
+        <h1 className="app-title" style={{marginRight: 16}}>Notes</h1>
+        <button
+          className="theme-toggle"
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} mode`}
+          onClick={toggleTheme}
+          type="button"
+        >
+          <span className="theme-emoji" role="img" aria-label={theme === 'dark' ? 'moon' : 'sun'}>
+            {theme === 'dark' ? '🌙' : '☀️'}
+          </span>
+          {theme === 'dark' ? 'Dark' : 'Light'}
+        </button>
+      </div>
+      {children}
     </header>
+  );
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * SearchBar - minimal search component for filtering notes
+ */
+function SearchBar({ value, onChange, placeholder = "Search notes..." }) {
+  return (
+    <div style={{ width: '100%', maxWidth: 440, display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+      <input
+        type="text"
+        className="searchbar-input"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label="Search notes"
+        autoComplete="off"
+        spellCheck="false"
+      />
+    </div>
   );
 }
 
@@ -245,6 +271,9 @@ function App() {
   // Theme state
   const [theme, setTheme] = useState(getSavedTheme());
 
+  // Search/filter state
+  const [search, setSearch] = useState("");
+
   // Apply/remove .dark-theme class to root node
   useEffect(() => {
     const root = document.documentElement;
@@ -261,6 +290,15 @@ function App() {
   function toggleTheme() {
     setTheme(current => (current === 'dark' ? 'light' : 'dark'));
   }
+
+  // Filter notes (case-insensitive on title and body)
+  const filteredNotes = search.trim()
+    ? notes.filter(
+        n =>
+          n.title.toLowerCase().includes(search.trim().toLowerCase()) ||
+          n.body.toLowerCase().includes(search.trim().toLowerCase())
+      )
+    : notes;
 
   // Open modal for new note
   function openNewNote() {
@@ -295,9 +333,11 @@ function App() {
 
   return (
     <div className="app-root" style={themeCSSVars}>
-      <NotesHeader theme={theme} toggleTheme={toggleTheme} />
+      <NotesHeader theme={theme} toggleTheme={toggleTheme}>
+        <SearchBar value={search} onChange={setSearch} />
+      </NotesHeader>
       <main className="notes-main">
-        <NotesList notes={notes} onEdit={openEditNote} onDelete={handleDelete} />
+        <NotesList notes={filteredNotes} onEdit={openEditNote} onDelete={handleDelete} />
         <Fab onClick={openNewNote} />
       </main>
       <NoteModal

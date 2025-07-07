@@ -65,6 +65,40 @@
   margin-right: 2px;
 }
 
+/* --- Search bar styles --- */
+.searchbar-input {
+  width: 100%;
+  max-width: 420px;
+  font-size: 1.08rem;
+  padding: 10px 13px 10px 38px;
+  background: var(--notes-background);
+  color: var(--text-main);
+  border: 1.7px solid #d7e5fa;
+  outline: none;
+  border-radius: 9px;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: border 0.14s, background 0.18s;
+  box-shadow: 0 0.5px 2px rgba(24,28,40,0.07);
+  background-repeat: no-repeat;
+  background-position: 11px center;
+  background-size: 16px 16px;
+  /* Inline SVG icon for clear 'search' visual */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="rgba(25,118,210,0.48)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M12.9 14.32a8 8 0 111.41-1.41l4.37 4.36a1 1 0 01-1.42 1.42l-4.36-4.37zM8 14A6 6 0 108 2a6 6 0 000 12z"/></svg>');
+}
+
+.searchbar-input:focus {
+  border-color: var(--primary);
+  background: #f5fafd;
+}
+
+.dark-theme .searchbar-input {
+  background: var(--notes-background);
+  color: var(--text-main);
+  border-color: #20222a;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="rgba(251,192,45,0.52)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M12.9 14.32a8 8 0 111.41-1.41l4.37 4.36a1 1 0 01-1.42 1.42l-4.36-4.37zM8 14A6 6 0 108 2a6 6 0 000 12z"/></svg>');
+}
+
 body {
   margin: 0;
   font-family: "Segoe UI", "Roboto", Arial, sans-serif;
