@@ -68,13 +68,20 @@
 body {
   margin: 0;
   font-family: "Segoe UI", "Roboto", Arial, sans-serif;
-  background: var(--app-background);
+  /* Modern, minimal linear gradient for light theme */
+  background: linear-gradient(135deg, #f8fafc 0%, #e4ecfe 100%);
   color: var(--text-main);
+}
+
+.dark-theme body {
+  /* Deep, minimal gradient for dark theme */
+  background: linear-gradient(135deg, #181a20 0%, #232737 100%);
 }
 
 .app-root {
   min-height: 100vh;
-  background: var(--app-background);
+  /* Inherit the gradient background from the body for consistency */
+  background: transparent;
 }
 
 .notes-header {
